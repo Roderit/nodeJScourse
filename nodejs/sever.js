@@ -10,7 +10,10 @@ const callBackDelServidor = (req, res) => {
 
     const rutaLimpia = ruta.replace(/^\/+|\/+$/g, '');
 
-    console.log('req.method', req.method.toLowerCase());
+    const metodo = req.method.toLowerCase();
+
+    const {query = {}} = urlParseada;
+
 
     switch(rutaLimpia){
       case 'ruta':
