@@ -1,4 +1,6 @@
 const http = require('http');
+const { StringDecoder } = require('string_decoder');
+const { stream } = require('undici-types');
 const url = require('url');
 
 const callBackDelServidor = (req, res) => {
@@ -16,7 +18,15 @@ const callBackDelServidor = (req, res) => {
 
     const {headers = {}} = req;
 
+    const decoder = new StringDecoder('utf-8');
+    let buffer = '';
+    req.on('data', (data)=>{
+      buffer += decoder.write(data);
+    });
 
+    req.on('end', ()=>{
+      buffer += decoder.end();
+    });
 
 
     switch(rutaLimpia){
