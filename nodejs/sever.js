@@ -1,7 +1,18 @@
-const http = require('node:http');
+const http = require('http');
+const url = require('url');
 
 const callBackDelServidor = (req, res) => {
-    res.end('hola mundo');
+
+    const urlActual = req.url;
+    const urlParseada = url.parse(urlActual, true);
+
+    const ruta = urlParseada.pathname;
+
+    if(ruta === '/ruta'){
+      res.end('estas en la ruta');
+    }else{
+      res.end('desconocido');
+    }
   };
 
 const server = http.createServer(callBackDelServidor);
