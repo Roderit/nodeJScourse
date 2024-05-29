@@ -14,6 +14,10 @@ const callBackDelServidor = (req, res) => {
 
     const {query = {}} = urlParseada;
 
+    const {headers = {}} = req;
+
+
+
 
     switch(rutaLimpia){
       case 'ruta':
