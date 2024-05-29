@@ -1,7 +1,6 @@
 const http = require('http');
-const { StringDecoder } = require('string_decoder');
-const { stream } = require('undici-types');
 const url = require('url');
+const { StringDecoder } = require('node:string_decoder');
 
 const callBackDelServidor = (req, res) => {
 
@@ -26,18 +25,45 @@ const callBackDelServidor = (req, res) => {
 
     req.on('end', ()=>{
       buffer += decoder.end();
+
+      const data = {
+        ruta: rutaLimpia,
+        query,
+        metodo,
+        headers,
+        payload: buffer
+      };
+
+      let handler;
+      if(rutaLimpia){
+        handler = enrutador[rutaLimpia];
+      }else{
+        handler = enrutador.noEncontrado;
+      }
+
+      if(typeof handler ==='function'){
+        handler(data, (statusCode = 200, mensaje)=>{
+          const respuesta = JSON.stringify(mensaje);
+          res.writeHead(statusCode);
+
+          res.end(respuesta);
+        })
+      }
     });
 
-
-    switch(rutaLimpia){
-      case 'ruta':
-        res.end('estas en la ruta');
-        break;
-
-      default:
-        res.end('desconocido');
-    }
   };
+
+const enrutador = {
+  ruta: (data, callback) => {
+    callback(200, {mensaje: 'esta es /ruta'})
+  },
+  usuarios: (data, callback) => {
+    callback(200, [{nombre: 'usuario 1'}, {nombre: 'usuario 2'}])
+  },
+  noEncontrado: (data, callback) => {
+    callback(484, {mensaje: 'no encontrado'});
+  }
+}
 
 const server = http.createServer(callBackDelServidor);
 
