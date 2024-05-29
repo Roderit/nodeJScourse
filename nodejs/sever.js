@@ -8,10 +8,17 @@ const callBackDelServidor = (req, res) => {
 
     const ruta = urlParseada.pathname;
 
-    if(ruta === '/ruta'){
-      res.end('estas en la ruta');
-    }else{
-      res.end('desconocido');
+    const rutaLimpia = ruta.replace(/^\/+|\/+$/g, '');
+
+    console.log('req.method', req.method.toLowerCase());
+
+    switch(rutaLimpia){
+      case 'ruta':
+        res.end('estas en la ruta');
+        break;
+
+      default:
+        res.end('desconocido');
     }
   };
 
